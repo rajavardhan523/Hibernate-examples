@@ -1,0 +1,23 @@
+CREATE TABLE contact
+(
+  id int primary key,
+  firstname character varying(80),
+  lastname character varying(80),
+)
+
+CREATE TABLE ADDRESS
+(
+  id int references contact(id),
+  street character varying(80),
+  city character varying(80),
+  state character varying(80),
+  zipcode character varying(80)
+)
+
+
+CREATE TABLE phonenumber
+(
+  id int references contact(id),
+  phonetype character varying(80),
+  phonenumber character varying(80),
+)

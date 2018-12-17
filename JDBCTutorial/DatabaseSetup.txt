@@ -1,0 +1,93 @@
+CREATE SEQUENCE "Cities_id_seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE "Cities_id_seq"
+  OWNER TO postgres;
+
+
+CREATE TABLE cities
+(
+  name character varying(80),
+  location character varying(80),
+  id integer NOT NULL DEFAULT nextval('"Cities_id_seq"'::regclass)
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE cities
+  OWNER TO postgres;
+  
+CREATE TABLE people
+(
+  id character varying(80),
+  name character varying(80),
+  details character varying(80)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE people
+  OWNER TO rakesh;
+    
+
+CREATE SEQUENCE "user_id_seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE "user_id_seq"
+  OWNER TO postgres;  
+
+CREATE TABLE user_table
+(
+  id integer NOT NULL DEFAULT nextval('user_id_seq'::regclass),
+  username character varying,
+  first_name character varying,
+  last_name character varying,
+  email_address character varying,
+  postal_code character varying(5)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE user_table
+  OWNER TO postgres;
+
+  
+  
+  
+ 
+CREATE OR REPLACE FUNCTION get_user_credentials(IN i_user_name character varying, IN i_email_address character varying, OUT o_first_name character varying, OUT o_last_name character varying, OUT o_email_address character varying)
+  RETURNS SETOF record AS
+$BODY$
+BEGIN
+  RETURN QUERY
+    SELECT 
+      first_name,
+      last_name,
+      email_address
+    FROM user_table
+    WHERE username = i_user_name
+	and email_address = i_email_address;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION get_user_credentials(character varying, character varying)
+  OWNER TO postgres;
+ 
+
+insert into user_table(username,first_name,last_name,email_address) values ('testname','test','last','test@test.com');
+
+select * from user_Table;
+ 
+SELECT * FROM get_user_credentials('testname','test@test.com');
+
+
+
